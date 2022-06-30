@@ -2,47 +2,61 @@ DROP TABLE Car;
 DROP TABLE Car_dealership;
 
 CREATE TABLE Car_dealership(
-    cd_ID int NOT NULL PRIMARY KEY,
+    cd_ID UNIQUEIDENTIFIER PRIMARY KEY default NEWID(),
     cd_Name varchar(255) NOT NULL,
 );
 
 
 CREATE TABLE Car (
-    cID int NOT NULL PRIMARY KEY,
+    cID UNIQUEIDENTIFIER PRIMARY KEY default NEWID(),
     cname varchar(255) NOT NULL,
 	cPrice int NOT NULL,
-    cd_ID int FOREIGN KEY REFERENCES Car_dealership(cd_ID)
+    cd_ID UNIQUEIDENTIFIER FOREIGN KEY REFERENCES Car_dealership(cd_ID)
 );
 
 
 
 
 
+INSERT INTO Car_dealership(cd_ID, cd_Name) VALUES (default, 'Toyota');
+INSERT INTO Car_dealership(cd_ID, cd_Name) VALUES (default, 'BMW');
+INSERT INTO Car_dealership(cd_ID, cd_Name) VALUES (default, 'Škoda');
+INSERT INTO Car_dealership(cd_ID, cd_Name) VALUES (default, 'Ford');
+INSERT INTO Car_dealership(cd_ID, cd_Name) VALUES (default, 'Mercedes-Benz');
 
-INSERT INTO Car_dealership(cd_ID, cd_Name) VALUES (1, 'Toyota');
-INSERT INTO Car_dealership(cd_ID, cd_Name) VALUES (2, 'BMW');
-INSERT INTO Car_dealership(cd_ID, cd_Name) VALUES (3, 'Škoda');
-INSERT INTO Car_dealership(cd_ID, cd_Name) VALUES (4, 'Ford');
-INSERT INTO Car_dealership(cd_ID, cd_Name) VALUES (5, 'Mercedes-Benz');
-
-
-INSERT INTO Car(cID, cName,cPrice,cd_ID) VALUES (5, 'Toyota Yaris',22000, 1);
-INSERT INTO Car(cID, cName,cPrice,cd_ID) VALUES (6, 'Toyota Yaris+',23600, 1);
-INSERT INTO Car(cID, cName,cPrice,cd_ID) VALUES (7, 'Toyota Corolla',77000, 1);
-
-INSERT INTO Car(cID, cName,cPrice,cd_ID) VALUES (8, 'BMW 116d',123000 ,2);
-INSERT INTO Car(cID, cName,cPrice,cd_ID) VALUES (9, 'BMW 330i',230000, 2);
-INSERT INTO Car(cID, cName,cPrice,cd_ID) VALUES (10, 'BMW M5 CS',840000, 2);
-
-INSERT INTO Car(cID, cName,cPrice,cd_ID) VALUES (11,'Ford Raptor',420000, 4);
-INSERT INTO Car(cID, cName,cPrice,cd_ID) VALUES (12, 'Ford X',135000, 4);
-INSERT INTO Car(cID, cName,cPrice,cd_ID) VALUES (13, 'Ford Mustang',460000, 4);
+SELECT * FROM Car;
 
 
-INSERT INTO Car(cID, cName,cPrice,cd_ID) VALUES (1, 'Mercedes-Benz A180',72000, 5);
-INSERT INTO Car(cID, cName,cPrice,cd_ID) VALUES (2, 'Mercedes-Benz C200',160000, 5);
-INSERT INTO Car(cID, cName,cPrice,cd_ID) VALUES (3, 'Mercedes-Benz E350',430000, 5);
-INSERT INTO Car(cID, cName,cPrice,cd_ID) VALUES (4, 'Mercedes-Benz AMG GT',1250000, 5);
+INSERT INTO Car(cID, cName,cPrice,cd_ID) VALUES (default, 'Toyota Yaris',22000, (SELECT cd_ID FROM Car_dealership
+WHERE cd_Name = 'Toyota'));
+INSERT INTO Car(cID, cName,cPrice,cd_ID) VALUES (default, 'Toyota Yaris+',23600, (SELECT cd_ID FROM Car_dealership
+WHERE cd_Name = 'Toyota'));
+INSERT INTO Car(cID, cName,cPrice,cd_ID) VALUES (default, 'Toyota Corolla',77000, (SELECT cd_ID FROM Car_dealership
+WHERE cd_Name = 'Toyota'));
+
+INSERT INTO Car(cID, cName,cPrice,cd_ID) VALUES (default, 'BMW 116d',123000 ,(SELECT cd_ID FROM Car_dealership
+WHERE cd_Name = 'BMW'));
+INSERT INTO Car(cID, cName,cPrice,cd_ID) VALUES (default, 'BMW 330i',230000, (SELECT cd_ID FROM Car_dealership
+WHERE cd_Name = 'BMW'));
+INSERT INTO Car(cID, cName,cPrice,cd_ID) VALUES (default, 'BMW M5 CS',840000, (SELECT cd_ID FROM Car_dealership
+WHERE cd_Name = 'BMW'));
+
+INSERT INTO Car(cID, cName,cPrice,cd_ID) VALUES (default,'Ford Raptor',420000, (SELECT cd_ID FROM Car_dealership
+WHERE cd_Name = 'Ford'));
+INSERT INTO Car(cID, cName,cPrice,cd_ID) VALUES (default, 'Ford X',135000, (SELECT cd_ID FROM Car_dealership
+WHERE cd_Name = 'Ford'));
+INSERT INTO Car(cID, cName,cPrice,cd_ID) VALUES (default, 'Ford Mustang',460000, (SELECT cd_ID FROM Car_dealership
+WHERE cd_Name = 'Ford'));
+
+
+INSERT INTO Car(cID, cName,cPrice,cd_ID) VALUES (default, 'Mercedes-Benz A180',72000, (SELECT cd_ID FROM Car_dealership
+WHERE cd_Name = 'Mercedes-Benz'));
+INSERT INTO Car(cID, cName,cPrice,cd_ID) VALUES (default, 'Mercedes-Benz C200',160000, (SELECT cd_ID FROM Car_dealership
+WHERE cd_Name = 'Mercedes-Benz'));
+INSERT INTO Car(cID, cName,cPrice,cd_ID) VALUES (default, 'Mercedes-Benz E350',430000, (SELECT cd_ID FROM Car_dealership
+WHERE cd_Name = 'Mercedes-Benz'));
+INSERT INTO Car(cID, cName,cPrice,cd_ID) VALUES (default, 'Mercedes-Benz AMG GT',1250000, (SELECT cd_ID FROM Car_dealership
+WHERE cd_Name = 'Mercedes-Benz'));
 
 
 
