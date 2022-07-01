@@ -155,7 +155,8 @@
     <Compile Include="Areas\HelpPage\SampleGeneration\SampleDirection.cs" />
     <Compile Include="Areas\HelpPage\SampleGeneration\TextSample.cs" />
     <Compile Include="Areas\HelpPage\XmlDocumentationProvider.cs" />
-    <Compile Include="Controllers\CDealershipController.cs" />
+    <Compile Include="Controllers\CarDealershipController.cs" />
+    <Compile Include="Controllers\CarController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ValuesController.cs" />
     <Compile Include="Global.asax.cs">
@@ -246,6 +247,16 @@
     <None Include="packages.config" />
     <Content Include="Scripts\jquery-3.4.1.slim.min.map" />
     <Content Include="Scripts\jquery-3.4.1.min.map" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Mono02.Model\Mono02.Model.csproj">
+      <Project>{143B1928-4E90-44A7-A367-2F72C3B8F970}</Project>
+      <Name>Mono02.Model</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Mono02.Service\Mono02.Service.csproj">
+      <Project>{F0E46370-E703-4822-BD36-F857BA4A8927}</Project>
+      <Name>Mono02.Service</Name>
+    </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

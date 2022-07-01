@@ -6,7 +6,9 @@ using System.Threading.Tasks;
 
 namespace Mono02.Model.Common
 {
-    public class Class1
+    public interface ICarDealershipModel
     {
+
+
     }
 }

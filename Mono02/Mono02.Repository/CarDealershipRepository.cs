@@ -1,35 +1,20 @@
-﻿using System.Collections.Generic;
+﻿using Mono02.Model;
+using Mono02.Repository.Common;
+using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Net;
 using System.Net.Http;
-using System.Web.Http;
-using System.Runtime.InteropServices;
 
 
-namespace Mono02.WebApi.Controllers
+namespace Mono02.Repository
 {
-    public class CarDealership
+    public class CarDealershipRepository : ICarDealershipRepository
     {
-        public CarDealership(System.Guid ID, string NAME)
+        string connectionString = "Data Source=DESKTOP-UBO4KB9\\SQLEXPRESS;Initial Catalog=master;Integrated Security=True";
+
+        public List<CarDealership> GetCarDealerShip()
         {
-            cd_ID = ID;
-            cd_Name = NAME;
-        }
-        public System.Guid cd_ID;
-        public string cd_Name;
-
-
-
-    };
-
-    public class CarDealershipController : ApiController
-    {
-        [HttpGet]
-        [Route("CarDealership")]
-        // GET api/values
-        public HttpResponseMessage GetCarDealerShip()
-        {
-            SqlConnection conn = new SqlConnection("Data Source=DESKTOP-UBO4KB9\\SQLEXPRESS;Initial Catalog=master;Integrated Security=True");
+            SqlConnection conn = new SqlConnection(connectionString);
 
 
             using (conn)
@@ -52,20 +37,17 @@ namespace Mono02.WebApi.Controllers
                 else
                 {
                     reader.Close();
-                    return Request.CreateResponse(HttpStatusCode.NotFound, "Error");
+                    return null;
                 }
                 reader.Close();
-                return Request.CreateResponse(HttpStatusCode.OK, cDealership);
+                return cDealership;
             }
         }
-        
-        [HttpGet]
-        [Route("GetCarDealership")]
-        // GET api/values/5
-        public HttpResponseMessage Get(System.Guid id)
+
+        public CarDealership Get(System.Guid id)
         {
 
-            SqlConnection conn = new SqlConnection("Data Source=DESKTOP-UBO4KB9\\SQLEXPRESS;Initial Catalog=master;Integrated Security=True");
+            SqlConnection conn = new SqlConnection(connectionString);
 
             using (conn)
             {
@@ -81,7 +63,6 @@ namespace Mono02.WebApi.Controllers
                     {
                         carDealershipId.Add(reader.GetGuid(0));
                     }
-                    
                 }
                 else
                 {
@@ -90,7 +71,7 @@ namespace Mono02.WebApi.Controllers
                 reader.Close();
                 if (!carDealershipId.Exists(x => x == id))
                 {
-                    return Request.CreateResponse(HttpStatusCode.BadRequest, "Ne postoji taj ID");
+                    return null;
                 }
 
                 else
@@ -98,7 +79,6 @@ namespace Mono02.WebApi.Controllers
                     SqlCommand command = new SqlCommand("SELECT * FROM Car_dealership WHERE cd_ID = @sId;", conn);
 
                     command.Parameters.AddWithValue("@sId", id);
-                    
 
                     SqlDataReader reader2 = command.ExecuteReader();
 
@@ -107,34 +87,24 @@ namespace Mono02.WebApi.Controllers
                         if (reader2.Read())
                         {
                             CarDealership retrn = new CarDealership(reader2.GetGuid(0), reader2.GetString(1));
-                            return Request.CreateResponse(HttpStatusCode.OK, retrn);
+                            return retrn;
                         }
                         else
                         {
-                            return Request.CreateResponse(HttpStatusCode.BadRequest, "Error");
+                            return null;
                         }
-
-
                     }
                     else
                     {
-                        return Request.CreateResponse(HttpStatusCode.BadRequest, "Error");
-
+                        return null;
                     }
-
                 }
             }
         }
 
-
-
-
-        [HttpPost]
-        [Route("AddCarDealership")]
-
-        public HttpResponseMessage PostCarDealership(CarDealership C)
+        public CarDealership PostCarDealership(CarDealership C)
         {
-            SqlConnection conn = new SqlConnection("Data Source=DESKTOP-UBO4KB9\\SQLEXPRESS;Initial Catalog=master;Integrated Security=True");
+            SqlConnection conn = new SqlConnection(connectionString);
 
             using (conn)
             {
@@ -160,7 +130,7 @@ namespace Mono02.WebApi.Controllers
 
                 if (carDealershipName.Exists(x => x == C.cd_Name))
                 {
-                    return Request.CreateResponse(HttpStatusCode.BadRequest, "Car dealership already exists");
+                    return null;
                 }
                 else
                 {
@@ -168,77 +138,16 @@ namespace Mono02.WebApi.Controllers
                     System.Guid g = System.Guid.NewGuid();
                     command.Parameters.AddWithValue("@cd_ID", g);
                     command.Parameters.AddWithValue("@cd_Name", C.cd_Name);
-
                     command.ExecuteNonQuery();
-                    return Request.CreateResponse(HttpStatusCode.OK, "Done");
+                    C.cd_ID = g;
+                    return C;
                 }
-
-
             }
         }
 
-
-        [HttpPut]
-        [Route("UpdateCarDealership")]
-
-        public HttpResponseMessage Putt(System.Guid id, [FromBody] CarDealership C)
+        public CarDealership Putt(System.Guid id, CarDealership C)
         {
-            C.cd_ID = id;
-            SqlConnection conn = new SqlConnection("Data Source=DESKTOP-UBO4KB9\\SQLEXPRESS;Initial Catalog=master;Integrated Security=True");
-
-            using (conn)
-            {
-                List<System.Guid> carDealershipId = new List<System.Guid>();
-                SqlCommand command2 = new SqlCommand("SELECT cd_ID FROM Car_dealership;", conn);
-
-                conn.Open();
-                SqlDataReader reader = command2.ExecuteReader();
-
-                if (reader.HasRows)
-                {
-                    while (reader.Read())
-                    {
-                        carDealershipId.Add(reader.GetGuid(0));
-                    }
-                    reader.Close();
-                }
-                else
-                {
-                    reader.Close();
-                }
-
-                if (!carDealershipId.Exists(x => x == C.cd_ID))
-                {
-                    return Request.CreateResponse(HttpStatusCode.BadRequest, "Ne postoji taj ID");
-                }
-
-                else
-                {
-                    SqlCommand command = new SqlCommand("UPDATE Car_dealership SET cd_Name=@cd_Name WHERE cd_id=@sId", conn);
-                    System.Guid g = System.Guid.NewGuid();
-                    command.Parameters.AddWithValue("@cd_ID", C.cd_ID);
-                    command.Parameters.AddWithValue("@cd_Name", C.cd_Name);
-                    command.Parameters.AddWithValue("@sId", id);
-                    command.ExecuteNonQuery();
-
-                    conn.Close();
-                    return Request.CreateResponse(HttpStatusCode.OK, "Done");
-
-                }
-            }
-
-        }
-
-
-
-
-        [HttpDelete]
-        [Route("DeleteCarDealership")]
-
-        public HttpResponseMessage Delete(System.Guid id)
-        {
-          
-            SqlConnection conn = new SqlConnection("Data Source=DESKTOP-UBO4KB9\\SQLEXPRESS;Initial Catalog=master;Integrated Security=True");
+            SqlConnection conn = new SqlConnection(connectionString);
 
             using (conn)
             {
@@ -263,28 +172,70 @@ namespace Mono02.WebApi.Controllers
 
                 if (!carDealershipId.Exists(x => x == id))
                 {
-                    return Request.CreateResponse(HttpStatusCode.BadRequest, "Ne postoji taj ID");
+                    return null;
                 }
 
                 else
                 {
-                    SqlCommand command = new SqlCommand("DELETE FROM Car_dealership WHERE cd_ID = @sId;",conn);
-                    
+                    SqlCommand command = new SqlCommand("UPDATE Car_dealership SET cd_Name=@cd_Name WHERE cd_id=@sId", conn);
+                    command.Parameters.AddWithValue("@cd_Name", C.cd_Name);
+                    command.Parameters.AddWithValue("@sId", id);
+                    command.ExecuteNonQuery();
+                    C.cd_ID = id;
+
+                    conn.Close();
+                    return C;
+
+                }
+            }
+
+        }
+
+        public bool Delete(System.Guid id)
+        {
+
+            string connectionString = "Data Source=DESKTOP-UBO4KB9\\SQLEXPRESS;Initial Catalog=master;Integrated Security=True";
+            SqlConnection conn = new SqlConnection(connectionString);
+
+            using (conn)
+            {
+                List<System.Guid> carDealershipId = new List<System.Guid>();
+                SqlCommand command2 = new SqlCommand("SELECT cd_ID FROM Car_dealership;", conn);
+
+                conn.Open();
+                SqlDataReader reader = command2.ExecuteReader();
+
+                if (reader.HasRows)
+                {
+                    while (reader.Read())
+                    {
+                        carDealershipId.Add(reader.GetGuid(0));
+                    }
+                    reader.Close();
+                }
+                else
+                {
+                    reader.Close();
+                }
+
+                if (!carDealershipId.Exists(x => x == id))
+                {
+                    return false;
+                }
+
+                else
+                {
+                    SqlCommand command = new SqlCommand("DELETE FROM Car_dealership WHERE cd_ID = @sId;", conn);
+
                     command.Parameters.AddWithValue("@sId", id);
                     command.ExecuteNonQuery();
 
                     conn.Close();
-                    return Request.CreateResponse(HttpStatusCode.OK, "Done");
+                    return true;
 
                 }
             }
+        }
+
     }
-
-
-
-
-
-
-    }//APi
 }
-

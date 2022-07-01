@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Mono02.Service
+namespace Mono02.Model.Common
 {
-    public class Class1
+    public interface ICar
     {
     }
 }
