@@ -96,5 +96,31 @@ namespace Mono02.WebApi.Controllers
 
 
     }//APi
+    /*
+    public class CarDealershipRest
+    {
+        public CarDealershipRest(System.Guid g, string name)
+        {
+            carDealershipId = g;
+            carDealershipName = name;
+
+        }
+        public System.Guid carDealershipId;
+        public string carDealershipName;
+    }
+
+    public class CarDealershipCreateRest { 
+        public CarDealershipCreateRest(string name)
+        {
+            carDealershipCreateRestName = name;
+        }
+        string carDealershipCreateRestName;
+
+    }
+    */
+
+
+
+
 }
 
