@@ -9,10 +9,6 @@ namespace Mono02.Repository.Common
 {
     public interface ICarRepository
     { 
-        List<Car> GetCar();
-        Car Get(System.Guid id);
-        Car AddCar(Car C);
-        Car Putt(System.Guid id, Car C);
-        bool Delete(System.Guid id);
+        
     }
 }

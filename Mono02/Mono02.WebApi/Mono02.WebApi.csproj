@@ -157,6 +157,8 @@
     <Compile Include="Areas\HelpPage\XmlDocumentationProvider.cs" />
     <Compile Include="Controllers\CarDealershipController.cs" />
     <Compile Include="Controllers\CarController.cs" />
+    <Compile Include="Controllers\CarDealershipRest.cs" />
+    <Compile Include="Controllers\CarRest.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ValuesController.cs" />
     <Compile Include="Global.asax.cs">

@@ -6,6 +6,7 @@ using System.Web.Http;
 using System.Runtime.InteropServices;
 using Mono02.Model;
 using Mono02.Service;
+using System.Threading.Tasks;
 
 namespace Mono02.WebApi.Controllers
 {
@@ -14,62 +15,77 @@ namespace Mono02.WebApi.Controllers
     {
         [HttpGet]
         [Route("CarDealership")]
-        public HttpResponseMessage GetCarDealerShip()
+        public async Task<HttpResponseMessage> GetCarDealerShipAsync()
         {
             CarDealershipService result = new CarDealershipService();
-            List<CarDealership> retrn = result.GetCarDealership();
+            List<CarDealership> retrn = await result.GetCarDealershipAsync();
 
-            if (retrn == null)
-                { return Request.CreateResponse(HttpStatusCode.NotFound, "Error"); }
+            List<CarDealershipRest> retrn2 = new List<CarDealershipRest>();
+
+            if(retrn.Count > 0)
+            {
+                foreach(CarDealership cd in retrn)
+                {
+                    retrn2.Add(new CarDealershipRest(cd.cd_Name));
+                }
+                return Request.CreateResponse(HttpStatusCode.OK, retrn2);
+            }
 
             else 
-                { return Request.CreateResponse(HttpStatusCode.OK, retrn); }    
+                { 
+                return Request.CreateResponse(HttpStatusCode.NotFound, "Error");
+            }
         }
         
 
         [HttpGet]
         [Route("GetCarDealership")]
-        public HttpResponseMessage Get(System.Guid id)
+        public async Task<HttpResponseMessage> GetAsync(System.Guid id)
         {
             CarDealershipService result = new CarDealershipService();
-            CarDealership retrn = result.Get(id);
+            CarDealership retrn = await result.GetAsync(id);
 
-            if (retrn == null)
+            CarDealershipRest retrn2 = new CarDealershipRest(retrn.cd_Name);
+
+            if (retrn2 == null)
             { return Request.CreateResponse(HttpStatusCode.NotFound, "ID doesn't exist"); }
 
             else
-            { return Request.CreateResponse(HttpStatusCode.OK, retrn); }
+            { return Request.CreateResponse(HttpStatusCode.OK, retrn2); }
         }
 
 
         [HttpPost]
         [Route("AddCarDealership")]
-        public HttpResponseMessage PostCarDealership(CarDealership C)
+        public async Task<HttpResponseMessage> PostCarDealershipAsync(CarDealership C)
         {
             CarDealershipService result = new CarDealershipService();
-            CarDealership retrn = result.PostCarDealership(C);
+            CarDealership retrn = await result.PostCarDealershipAsync(C);
 
-            if (retrn == null)
+            CarDealershipRest retrn2 = new CarDealershipRest(retrn.cd_Name);
+
+            if (retrn2 == null)
             { return Request.CreateResponse(HttpStatusCode.NotFound, "ID already exists"); }
 
             else
-            { return Request.CreateResponse(HttpStatusCode.OK, retrn); }
+            { return Request.CreateResponse(HttpStatusCode.OK, retrn2); }
         }
 
 
         [HttpPut]
         [Route("UpdateCarDealership")]
 
-        public HttpResponseMessage Putt(System.Guid id, [FromBody] CarDealership C)
+        public async Task<HttpResponseMessage> PuttAsync(System.Guid id, [FromBody] CarDealership C)
         {
             CarDealershipService result = new CarDealershipService();
-            CarDealership retrn = result.Putt(id, C);
+            CarDealership retrn = await result.PuttAsync(id, C);
+            CarDealershipRest retrn2 = new CarDealershipRest(retrn.cd_Name);
 
-            if (retrn == null)
+            if (retrn2 == null)
             { return Request.CreateResponse(HttpStatusCode.NotFound, "ID doesn't exist"); }
 
             else
-            { return Request.CreateResponse(HttpStatusCode.OK, retrn); }
+            { return Request.CreateResponse(HttpStatusCode.OK, retrn2); }
 
         }
 
@@ -77,11 +93,11 @@ namespace Mono02.WebApi.Controllers
         [HttpDelete]
         [Route("DeleteCarDealership")]
 
-        public HttpResponseMessage Delete(System.Guid id)
+        public async Task<HttpResponseMessage> DeleteAsync(System.Guid id)
         {
 
             CarDealershipService result = new CarDealershipService();
-            bool retrn = result.Delete(id);
+            bool retrn = await result.DeleteAsync(id);
 
             if (retrn == false)
             { return Request.CreateResponse(HttpStatusCode.NotFound, "ID doesn't exist"); }

@@ -11,30 +11,30 @@ namespace Mono02.Service
 {
     public class CarDealershipService : ICarDealershipService
     {
-        public List<CarDealership> GetCarDealership()
+        public async Task<List<CarDealership>> GetCarDealershipAsync()
         {
             CarDealershipRepository retrn = new CarDealershipRepository();
-            return retrn.GetCarDealerShip();
+            return await retrn.GetCarDealerShipAsync();
         }
-        public CarDealership Get(System.Guid id)
+        public async Task<CarDealership> GetAsync(System.Guid id)
         {
             CarDealershipRepository retrn = new CarDealershipRepository();
-            return retrn.Get(id);
+            return await retrn.GetAsync(id);
         }
-        public CarDealership PostCarDealership(CarDealership C)
+        public async Task<CarDealership> PostCarDealershipAsync(CarDealership C)
         {
             CarDealershipRepository retrn = new CarDealershipRepository();
-            return retrn.PostCarDealership(C);
+            return await retrn.PostCarDealershipAsync(C);
         }
-        public CarDealership Putt(System.Guid id, CarDealership C)
+        public async Task<CarDealership> PuttAsync(System.Guid id, CarDealership C)
         {
             CarDealershipRepository retrn = new CarDealershipRepository();
-            return retrn.Putt(id,C);
+            return await retrn.PuttAsync(id,C);
         }
-        public bool Delete(System.Guid id)
+        public async Task<bool> DeleteAsync(System.Guid id)
         {
             CarDealershipRepository retrn = new CarDealershipRepository();
-            return retrn.Delete(id);
+            return await retrn.DeleteAsync(id);
         }
 
 

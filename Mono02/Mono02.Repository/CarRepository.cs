@@ -14,7 +14,7 @@ namespace Mono02.Repository
     {
         string connectionString = "Data Source=DESKTOP-UBO4KB9\\SQLEXPRESS;Initial Catalog=master;Integrated Security=True";
 
-        public List<Car> GetCar()
+        public async Task<List<Car>> GetCarAsync()
         {
             SqlConnection conn = new SqlConnection(connectionString);
 
@@ -27,11 +27,13 @@ namespace Mono02.Repository
 
                 conn.Open();
 
-                SqlDataReader reader = command.ExecuteReader();
+                SqlDataReader reader = await command.ExecuteReaderAsync();
+
+                
 
                 if (reader.HasRows)
                 {
-                    while (reader.Read())
+                    while (await reader.ReadAsync())
                     {
                         cars.Add(new Car(reader.GetGuid(0), reader.GetString(1), reader.GetInt32(2), reader.GetInt32(3)));
                     }
@@ -46,7 +48,7 @@ namespace Mono02.Repository
             }
         }
 
-        public Car Get(System.Guid id)
+        public async Task<Car> GetAsync(System.Guid id)
         {
 
             SqlConnection conn = new SqlConnection(connectionString);
@@ -57,11 +59,11 @@ namespace Mono02.Repository
                 SqlCommand command2 = new SqlCommand("SELECT carId FROM Car;", conn);
 
                 conn.Open();
-                SqlDataReader reader = command2.ExecuteReader();
+                SqlDataReader reader = await command2.ExecuteReaderAsync();
 
                 if (reader.HasRows)
                 {
-                    while (reader.Read())
+                    while (await reader.ReadAsync())
                     {
                         carId.Add(reader.GetGuid(0));
                     }
@@ -82,11 +84,11 @@ namespace Mono02.Repository
 
                     command.Parameters.AddWithValue("@carIdd", id);
 
-                    SqlDataReader reader2 = command.ExecuteReader();
+                    SqlDataReader reader2 = await command.ExecuteReaderAsync();
 
                     if (reader2.HasRows)
                     {
-                        if (reader2.Read())
+                        if (await reader2.ReadAsync())
                         {
                             Car retrn = new Car(reader2.GetGuid(0), reader2.GetString(1), reader2.GetInt32(2), reader2.GetInt32(3));
                             return retrn;
@@ -104,7 +106,7 @@ namespace Mono02.Repository
             }
         }
 
-        public Car AddCar(Car C)
+        public async Task<Car> AddCarAsync(Car C)
         {
             SqlConnection conn = new SqlConnection(connectionString);
             conn.Open();
@@ -120,14 +122,14 @@ namespace Mono02.Repository
                 command.Parameters.AddWithValue("@price", C.carPrice);
                 command.Parameters.AddWithValue("@mileage", C.carMileage);
 
-                command.ExecuteNonQuery();
+                await command.ExecuteNonQueryAsync();
                 C.carId = g;  
 
                     return C;
             }
         }
 
-        public Car Putt(System.Guid id, Car C)
+        public async Task<Car> PuttAsync(System.Guid id, Car C)
         {
             SqlConnection conn = new SqlConnection(connectionString);
 
@@ -137,11 +139,11 @@ namespace Mono02.Repository
                 SqlCommand command2 = new SqlCommand("SELECT carId FROM Car;", conn);
 
                 conn.Open();
-                SqlDataReader reader = command2.ExecuteReader();
+                SqlDataReader reader = await command2.ExecuteReaderAsync();
 
                 if (reader.HasRows)
                 {
-                    while (reader.Read())
+                    while (await reader.ReadAsync())
                     {
                         carsId.Add(reader.GetGuid(0));
                     }
@@ -164,7 +166,7 @@ namespace Mono02.Repository
                     command.Parameters.AddWithValue("@price", C.carPrice);
                     command.Parameters.AddWithValue("@mileage", C.carMileage);
                     command.Parameters.AddWithValue("@id", id);
-                    command.ExecuteNonQuery();
+                    await command .ExecuteNonQueryAsync();
                     C.carId = id;
 
                     conn.Close();
@@ -175,7 +177,7 @@ namespace Mono02.Repository
 
         }
 
-        public bool Delete(System.Guid id)
+        public async Task<bool> DeleteAsync(System.Guid id)
         {
 
             SqlConnection conn = new SqlConnection(connectionString);
@@ -186,11 +188,11 @@ namespace Mono02.Repository
                 SqlCommand command2 = new SqlCommand("SELECT carId FROM Car;", conn);
 
                 conn.Open();
-                SqlDataReader reader = command2.ExecuteReader();
+                SqlDataReader reader = await command2.ExecuteReaderAsync();
 
                 if (reader.HasRows)
                 {
-                    while (reader.Read())
+                    while (await reader.ReadAsync())
                     {
                         carId.Add(reader.GetGuid(0));
                     }
@@ -211,7 +213,7 @@ namespace Mono02.Repository
                     SqlCommand command = new SqlCommand("DELETE FROM Car WHERE carId = @id;", conn);
 
                     command.Parameters.AddWithValue("@id", id);
-                    command.ExecuteNonQuery();
+                    await command .ExecuteNonQueryAsync();
 
                     conn.Close();
                     return true;

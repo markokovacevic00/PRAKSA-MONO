@@ -1,5 +1,6 @@
 ﻿using Mono02.Model;
 using Mono02.Repository;
+using Mono02.Service.Common;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,32 +9,32 @@ using System.Threading.Tasks;
 
 namespace Mono02.Service
 {
-    public class CarService
+    public class CarService : ICarServiceCommon
     {
-        public List<Car> GetCar()
+        public async Task<List<Car>> GetCarAsync()
         {
             CarRepository retrn = new CarRepository();
-            return retrn.GetCar();
+            return await retrn.GetCarAsync();
         }
-        public Car Get(System.Guid id)
+        public async Task<Car> GetAsync(System.Guid id)
         {
             CarRepository retrn = new CarRepository();
-            return retrn.Get(id);
+            return await retrn.GetAsync(id);
         }
-        public Car AddCar(Car C)
+        public async Task<Car> AddCarAsync(Car C)
         {
             CarRepository retrn = new CarRepository();
-            return retrn.AddCar(C);
+            return await retrn.AddCarAsync(C);
         }
-        public Car Putt(System.Guid id, Car C)
+        public async Task<Car> PuttAsync(System.Guid id, Car C)
         {
             CarRepository retrn = new CarRepository();
-            return retrn.Putt(id, C);
+            return await retrn.PuttAsync(id, C);
         }
-        public bool Delete(System.Guid id)
+        public async Task<bool> DeleteAsync(System.Guid id)
         {
             CarRepository retrn = new CarRepository();
-            return retrn.Delete(id);
+            return await retrn.DeleteAsync(id);
         }
 
     }

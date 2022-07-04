@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http;
 
@@ -14,62 +15,75 @@ namespace Mono02.WebApi.Controllers
     {
         [HttpGet]
         [Route("Car")]
-        public HttpResponseMessage GetCar()
+        public async Task<HttpResponseMessage> GetCar()
         {
             CarService result = new CarService();
-            List<Car> retrn = result.GetCar();
+            List<Car> retrn = await result.GetCarAsync();
 
-            if (retrn == null)
-            { return Request.CreateResponse(HttpStatusCode.NotFound, "Error"); }
+            List<CarRest> retrn2 = new List<CarRest>();
 
+            if (retrn.Count > 0)
+            {
+                foreach (Car c in retrn)
+                {
+                    retrn2.Add(new CarRest(c.carName, c.carPrice, c.carMileage));
+                }
+                return Request.CreateResponse(HttpStatusCode.OK, retrn2);
+                
+            }
+
+          
             else
-            { return Request.CreateResponse(HttpStatusCode.OK, retrn); }
+            { return Request.CreateResponse(HttpStatusCode.NotFound, "Error"); }
         }
 
 
         [HttpGet]
         [Route("GetCar")]
-        public HttpResponseMessage Get(System.Guid id)
+        public async Task<HttpResponseMessage> Get(System.Guid id)
         {
             CarService result = new CarService();
-            Car retrn = result.Get(id);
+            Car retrn = await result.GetAsync(id);
+            CarRest retrn2 = new CarRest(retrn.carName, retrn.carPrice, retrn.carMileage);
 
-            if (retrn == null)
+            if (retrn2 == null)
             { return Request.CreateResponse(HttpStatusCode.NotFound, "ID doesn't exist"); }
 
             else
-            { return Request.CreateResponse(HttpStatusCode.OK, retrn); }
+            { return Request.CreateResponse(HttpStatusCode.OK, retrn2); }
         }
 
 
         [HttpPost]
         [Route("AddCar")]
-        public HttpResponseMessage PostCarDealership(Car C)
+        public async  Task<HttpResponseMessage> PostCarDealership(Car C)
         {
             CarService result = new CarService();
-            Car retrn = result.AddCar(C);
+            Car retrn = await result.AddCarAsync(C);
+            CarRest retrn2 = new CarRest(retrn.carName, retrn.carPrice, retrn.carMileage);
 
-            if (retrn == null)
+            if (retrn2 == null)
             { return Request.CreateResponse(HttpStatusCode.NotFound, "ID already exists"); }
 
             else
-            { return Request.CreateResponse(HttpStatusCode.OK, retrn); }
+            { return Request.CreateResponse(HttpStatusCode.OK, retrn2); }
         }
 
 
         [HttpPut]
         [Route("UpdateCar")]
 
-        public HttpResponseMessage Putt(System.Guid id, [FromBody] Car C)
+        public async Task<HttpResponseMessage> Putt(System.Guid id, [FromBody] Car C)
         {
             CarService result = new CarService();
-            Car retrn = result.Putt(id, C);
+            Car retrn = await result.PuttAsync(id, C);
+            CarRest retrn2 = new CarRest(retrn.carName, retrn.carPrice, retrn.carMileage);
 
-            if (retrn == null)
+            if (retrn2 == null)
             { return Request.CreateResponse(HttpStatusCode.NotFound, "ID doesn't exist"); }
 
             else
-            { return Request.CreateResponse(HttpStatusCode.OK, retrn); }
+            { return Request.CreateResponse(HttpStatusCode.OK, retrn2); }
 
         }
 
@@ -77,11 +91,11 @@ namespace Mono02.WebApi.Controllers
         [HttpDelete]
         [Route("DeleteCar")]
 
-        public HttpResponseMessage Delete(System.Guid id)
+        public async Task<HttpResponseMessage> Delete(System.Guid id)
         {
 
             CarService result = new CarService();
-            bool retrn = result.Delete(id);
+            bool retrn = await result.DeleteAsync(id);
 
             if (retrn == false)
             { return Request.CreateResponse(HttpStatusCode.NotFound, "ID doesn't exist"); }

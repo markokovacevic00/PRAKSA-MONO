@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Net;
 using System.Net.Http;
-
+using System.Threading.Tasks;
 
 namespace Mono02.Repository
 {
@@ -12,7 +12,7 @@ namespace Mono02.Repository
     {
         string connectionString = "Data Source=DESKTOP-UBO4KB9\\SQLEXPRESS;Initial Catalog=master;Integrated Security=True";
 
-        public List<CarDealership> GetCarDealerShip()
+        public async Task<List<CarDealership>> GetCarDealerShipAsync()
         {
             SqlConnection conn = new SqlConnection(connectionString);
 
@@ -25,11 +25,11 @@ namespace Mono02.Repository
 
                 conn.Open();
 
-                SqlDataReader reader = command.ExecuteReader();
+                SqlDataReader reader = await command.ExecuteReaderAsync();
 
                 if (reader.HasRows)
                 {
-                    while (reader.Read())
+                    while (await reader.ReadAsync())
                     {
                         cDealership.Add(new CarDealership(reader.GetGuid(0), reader.GetString(1)));
                     }
@@ -44,7 +44,7 @@ namespace Mono02.Repository
             }
         }
 
-        public CarDealership Get(System.Guid id)
+        public async Task<CarDealership> GetAsync(System.Guid id)
         {
 
             SqlConnection conn = new SqlConnection(connectionString);
@@ -55,11 +55,11 @@ namespace Mono02.Repository
                 SqlCommand command2 = new SqlCommand("SELECT cd_ID FROM Car_dealership;", conn);
 
                 conn.Open();
-                SqlDataReader reader = command2.ExecuteReader();
+                SqlDataReader reader = await command2.ExecuteReaderAsync();
 
                 if (reader.HasRows)
                 {
-                    while (reader.Read())
+                    while (await reader.ReadAsync())
                     {
                         carDealershipId.Add(reader.GetGuid(0));
                     }
@@ -80,11 +80,11 @@ namespace Mono02.Repository
 
                     command.Parameters.AddWithValue("@sId", id);
 
-                    SqlDataReader reader2 = command.ExecuteReader();
+                    SqlDataReader reader2 = await command.ExecuteReaderAsync();
 
                     if (reader2.HasRows)
                     {
-                        if (reader2.Read())
+                        if (await reader2.ReadAsync())
                         {
                             CarDealership retrn = new CarDealership(reader2.GetGuid(0), reader2.GetString(1));
                             return retrn;
@@ -102,7 +102,7 @@ namespace Mono02.Repository
             }
         }
 
-        public CarDealership PostCarDealership(CarDealership C)
+        public async Task<CarDealership> PostCarDealershipAsync(CarDealership C)
         {
             SqlConnection conn = new SqlConnection(connectionString);
 
@@ -113,11 +113,11 @@ namespace Mono02.Repository
                 SqlCommand command2 = new SqlCommand("SELECT cd_Name FROM Car_dealership;", conn);
 
                 conn.Open();
-                SqlDataReader reader = command2.ExecuteReader();
+                SqlDataReader reader = await command2.ExecuteReaderAsync();
 
                 if (reader.HasRows)
                 {
-                    while (reader.Read())
+                    while (await reader.ReadAsync())
                     {
                         carDealershipName.Add(reader.GetString(0));
                     }
@@ -138,14 +138,14 @@ namespace Mono02.Repository
                     System.Guid g = System.Guid.NewGuid();
                     command.Parameters.AddWithValue("@cd_ID", g);
                     command.Parameters.AddWithValue("@cd_Name", C.cd_Name);
-                    command.ExecuteNonQuery();
+                    await command.ExecuteNonQueryAsync();
                     C.cd_ID = g;
                     return C;
                 }
             }
         }
 
-        public CarDealership Putt(System.Guid id, CarDealership C)
+        public async Task<CarDealership> PuttAsync(System.Guid id, CarDealership C)
         {
             SqlConnection conn = new SqlConnection(connectionString);
 
@@ -155,11 +155,11 @@ namespace Mono02.Repository
                 SqlCommand command2 = new SqlCommand("SELECT cd_ID FROM Car_dealership;", conn);
 
                 conn.Open();
-                SqlDataReader reader = command2.ExecuteReader();
+                SqlDataReader reader = await command2.ExecuteReaderAsync();
 
                 if (reader.HasRows)
                 {
-                    while (reader.Read())
+                    while (await reader.ReadAsync())
                     {
                         carDealershipId.Add(reader.GetGuid(0));
                     }
@@ -180,7 +180,7 @@ namespace Mono02.Repository
                     SqlCommand command = new SqlCommand("UPDATE Car_dealership SET cd_Name=@cd_Name WHERE cd_id=@sId", conn);
                     command.Parameters.AddWithValue("@cd_Name", C.cd_Name);
                     command.Parameters.AddWithValue("@sId", id);
-                    command.ExecuteNonQuery();
+                    await command.ExecuteNonQueryAsync();
                     C.cd_ID = id;
 
                     conn.Close();
@@ -191,7 +191,7 @@ namespace Mono02.Repository
 
         }
 
-        public bool Delete(System.Guid id)
+        public async Task<bool> DeleteAsync(System.Guid id)
         {
 
             string connectionString = "Data Source=DESKTOP-UBO4KB9\\SQLEXPRESS;Initial Catalog=master;Integrated Security=True";
@@ -203,11 +203,11 @@ namespace Mono02.Repository
                 SqlCommand command2 = new SqlCommand("SELECT cd_ID FROM Car_dealership;", conn);
 
                 conn.Open();
-                SqlDataReader reader = command2.ExecuteReader();
+                SqlDataReader reader = await command2.ExecuteReaderAsync();
 
                 if (reader.HasRows)
                 {
-                    while (reader.Read())
+                    while (await reader .ReadAsync())
                     {
                         carDealershipId.Add(reader.GetGuid(0));
                     }
@@ -228,7 +228,7 @@ namespace Mono02.Repository
                     SqlCommand command = new SqlCommand("DELETE FROM Car_dealership WHERE cd_ID = @sId;", conn);
 
                     command.Parameters.AddWithValue("@sId", id);
-                    command.ExecuteNonQuery();
+                    await command.ExecuteNonQueryAsync();
 
                     conn.Close();
                     return true;
