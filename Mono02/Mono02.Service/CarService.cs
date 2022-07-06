@@ -1,4 +1,5 @@
-﻿using Mono02.Model;
+﻿using Mono02.Common;
+using Mono02.Model;
 using Mono02.Repository;
 using Mono02.Service.Common;
 using System;
@@ -11,10 +12,10 @@ namespace Mono02.Service
 {
     public class CarService : ICarServiceCommon
     {
-        public async Task<List<Car>> GetCarAsync()
+        public async Task<List<Car>> GetCarAsync(Paging P, Sorting S, SearchFilter F, BetweenFilter B)
         {
             CarRepository retrn = new CarRepository();
-            return await retrn.GetCarAsync();
+            return await retrn.GetCarAsync(P,S,F,B);
         }
         public async Task<Car> GetAsync(System.Guid id)
         {

@@ -1,4 +1,5 @@
-﻿using Mono02.Model;
+﻿using Mono02.Common;
+using Mono02.Model;
 using Mono02.Service;
 using System;
 using System.Collections.Generic;
@@ -15,10 +16,16 @@ namespace Mono02.WebApi.Controllers
     {
         [HttpGet]
         [Route("Car")]
-        public async Task<HttpResponseMessage> GetCar()
+        public async Task<HttpResponseMessage> GetCar(int newRpp, int pageNumber, string orderBy, string sortOrder, string search, int sMax, int sMin, string sName)
         {
+
+            Paging P = new Paging(newRpp, pageNumber);
+            Sorting S = new Sorting(orderBy, sortOrder); 
+            SearchFilter F = new SearchFilter(search);
+            BetweenFilter B = new BetweenFilter(sMin, sMax, sName);
+
             CarService result = new CarService();
-            List<Car> retrn = await result.GetCarAsync();
+            List<Car> retrn = await result.GetCarAsync(P,S,F,B);
 
             List<CarRest> retrn2 = new List<CarRest>();
 

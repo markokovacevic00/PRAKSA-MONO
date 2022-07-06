@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace Mono02.Repository.Common
 {
     public interface ICarRepository
-    { 
-        
+    {
+       
     }
 }

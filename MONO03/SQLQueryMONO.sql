@@ -28,6 +28,9 @@ INSERT INTO Car_dealership(cd_ID, cd_Name) VALUES (default, 'Mercedes-Benz');
 SELECT * FROM Car_dealership;
 
 
+SELECT * FROM Car ORDER BY carName;
+
+	
 INSERT INTO Car(carId, carName,carPrice,carDealershipId) VALUES (default, 'Toyota Yaris',22000, (SELECT cd_ID FROM Car_dealership
 WHERE cd_Name = 'Toyota'));
 INSERT INTO Car(carId, carName,carPrice,carDealershipId) VALUES (default, 'Toyota Yaris+',23600, (SELECT cd_ID FROM Car_dealership
@@ -90,7 +93,7 @@ FROM Car_dealership WITH(INDEX(CD_INDEX));
 
 
 
-SELECT * FROM Car;
+SELECT * FROM Car ORDER BY carName OFFSET 0 ROWS FETCH NEXT 3 ROWS ONLY;
 
 UPDATE Car
 SET carMileage = 100000

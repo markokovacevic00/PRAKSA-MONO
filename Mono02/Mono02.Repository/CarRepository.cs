@@ -1,4 +1,5 @@
-﻿using Mono02.Model;
+﻿using Mono02.Common;
+using Mono02.Model;
 using Mono02.Model.Common;
 using Mono02.Repository.Common;
 using System;
@@ -14,7 +15,7 @@ namespace Mono02.Repository
     {
         string connectionString = "Data Source=DESKTOP-UBO4KB9\\SQLEXPRESS;Initial Catalog=master;Integrated Security=True";
 
-        public async Task<List<Car>> GetCarAsync()
+        public async Task<List<Car>> GetCarAsync(Paging P, Sorting S, SearchFilter F, BetweenFilter B)
         {
             SqlConnection conn = new SqlConnection(connectionString);
 
@@ -23,13 +24,45 @@ namespace Mono02.Repository
             {
                 List<Car> cars = new List<Car>();
 
-                SqlCommand command = new SqlCommand("SELECT carId, carName, carPrice, carMileage FROM Car;", conn);
+                StringBuilder stringBuilder = new StringBuilder("SELECT carId, carName, carPrice, carMileage FROM Car ", 500);
+                // if
+                stringBuilder.AppendFormat("WHERE @btwnn LIKE '{0}%' ", F.searchFilter);
+                
+                //Dovrsiti ovaj filter
+                if (B != null)
+                {
+                    stringBuilder.AppendFormat("AND carPrice BETWEEN @sMin AND @sMax ", B.sName);
+                }
+                
+
+                if (S.orderBy != null)
+                {
+                    stringBuilder.AppendFormat("ORDER BY {0} {1} ", S.orderBy, S.sortOrder);
+
+                    if (P != null)
+                    {
+                        stringBuilder.Append("OFFSET @page ROWS FETCH NEXT @rpp ROWS ONLY;");
+                    }
+                }
+
+                SqlCommand command = new SqlCommand(Convert.ToString(stringBuilder), conn);
+                command.Parameters.AddWithValue("@page", (P.pageNumber-1)*P.rpp);
+                command.Parameters.AddWithValue("@rpp", P.rpp);
+                command.Parameters.AddWithValue("@sMin", B.min);
+                command.Parameters.AddWithValue("@sMax", B.max);
+                command.Parameters.AddWithValue("@btwnn", B.sName);
+
+
+
+
 
                 conn.Open();
 
+
+
                 SqlDataReader reader = await command.ExecuteReaderAsync();
 
-                
+
 
                 if (reader.HasRows)
                 {
